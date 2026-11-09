@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Codificación y vista -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Reto de 70 días: hábitos, metas, calendario y estadísticas.">
+  <meta name="theme-color" content="#04060f">
+  <meta name="color-scheme" content="dark">
+
+  <!-- Modo app en iPhone (pantalla de inicio) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anderson 70D">
+
+  <title>Anderson 70D · Modo Bestia</title>
+
+  <!-- Fuente -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+
+  <!-- Confeti para las celebraciones -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+  --bg:#04060f;
+  --card:rgba(255,255,255,.06);
+  --bd:rgba(255,255,255,.1);
+  --a:#4f7cff;
+  --b:#9b5cff;
+  --gold:#fbbf24;
+  --ok:#34d399;
+  --mut:#8b93a7;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:#fff;font-family:Inter,-apple-system,system-ui,sans-serif}
+body{min-height:100vh;background:radial-gradient(600px 400px at 100% 0,rgba(79,124,255,.25),transparent),radial-gradient(500px 400px at 0 70%,rgba(251,113,60,.12),transparent),var(--bg);background-attachment:fixed;padding-bottom:110px}
+main{max-width:480px;margin:auto;padding:18px 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:16px;margin-bottom:14px;backdrop-filter:blur(14px);animation:up .5s both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1{font-size:26px}h2{font-size:17px;margin-bottom:10px}h3{font-size:14px}
+.mut{color:var(--mut);font-size:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grad{background:linear-gradient(90deg,#6aa0ff,var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ring{position:relative;display:grid;place-items:center}
+.ring svg{transform:rotate(-90deg)}.ring .c{animation:rg 1.3s ease-out both}
+@keyframes rg{from{stroke-dashoffset:var(--C)}}
+.ring b{position:absolute;font-size:22px}
+.big{font-size:34px;font-weight:800}
+.task{border-top:1px solid var(--bd);padding:12px 0}.task:first-of-type{border:0}
+.task .h{display:flex;align-items:center;gap:10px;cursor:pointer}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--bd);background:none;display:grid;place-items:center;color:#000;font-weight:800;transition:.3s;flex:none}
+.chk.on{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;color:#fff;transform:scale(1.12)}
+.task.d .t{text-decoration:line-through;opacity:.5}
+.det{max-height:0;overflow:hidden;transition:max-height .35s;font-size:12px;color:#c3c9d9}
+.task.o .det{max-height:220px;padding-top:8px}
+.det a,.btn{color:#fff;text-decoration:none;background:linear-gradient(90deg,var(--a),var(--b));padding:6px 12px;border-radius:99px;font-size:12px;font-weight:600;display:inline-block;margin-top:6px;border:0;cursor:pointer}
+.bar{height:9px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--a),var(--b));animation:gw 1.2s ease-out both;transform-origin:left}
+@keyframes gw{from{transform:scaleX(0)}}
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(8,10,22,.85);backdrop-filter:blur(18px);border-top:1px solid var(--bd);display:flex;justify-content:center;gap:4px;z-index:5}
+nav a{flex:1;max-width:90px;text-align:center;color:var(--mut);text-decoration:none;font-size:10px;padding:6px 0;border-radius:14px;transition:.3s}
+nav a span{display:block;font-size:20px}nav a.on{color:#fff;background:linear-gradient(135deg,rgba(79,124,255,.35),rgba(155,92,255,.35))}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.cal .dn{font-size:10px;color:var(--mut)}
+.cell{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font-size:13px;background:rgba(255,255,255,.04);cursor:pointer;position:relative}
+.cell.out{opacity:.15;pointer-events:none}.cell.l1{background:rgba(155,92,255,.25)}.cell.l2{background:rgba(79,124,255,.55)}
+.cell.p{background:linear-gradient(135deg,#fbbf24,#f97316);color:#000;font-weight:800;animation:glow 2s infinite}
+.cell.p::after{content:"★";position:absolute;top:1px;right:4px;font-size:9px}
+.cell.sel{outline:2px solid #fff}.cell.td{box-shadow:0 0 0 2px var(--a)}
+@keyframes glow{0%,100%{box-shadow:0 0 4px #fbbf24}50%{box-shadow:0 0 16px #f97316}}
+.heat{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.heat .cell{border-radius:7px;font-size:9px;cursor:default}
+.bars{display:flex;align-items:flex-end;gap:5px;height:110px}
+.bars div{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--b),var(--a));min-height:3px;animation:bu 1s ease-out both;transform-origin:bottom}
+@keyframes bu{from{transform:scaleY(0)}}
+textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:14px;color:#fff;padding:10px;font:inherit;font-size:13px;min-height:80px;resize:vertical}
+.goal{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:6px 0}
+.ph{border-left:4px solid var(--c)}
+.tabs{display:flex;gap:8px;margin-bottom:12px}.tabs button{flex:1;padding:8px;border-radius:12px;border:1px solid var(--bd);background:none;color:#fff;font-size:12px}
+#pf{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+#pf .tr{font-size:96px;animation:bo 1s infinite alternate}@keyframes bo{to{transform:translateY(-16px) rotate(8deg) scale(1.1)}}
+.pl{animation:pulse 2s infinite}@keyframes pulse{50%{transform:scale(1.05)}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav id="nav"></nav>
+<div id="pf"><div class="tr">🏆</div><h1 class="grad" id="pt">¡DÍA PERFECTO!</h1><p id="pm" style="margin:12px 0 22px;color:#cbd5e1;max-width:320px"></p><button class="btn" onclick="document.getElementById('pf').style.display='none'">Continuar</button></div>
+
+<script>
+const START=new Date(2026,10,9),TOTAL=70,DAY=864e5;
+const yt=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+const TASKS=[
+{id:1,t:'05:00',e:'🌅',n:'Despertar y movimientos linfáticos',d:'Sacudidas de cuerpo entero por 3 min (técnica Shaolin).',w:'Activa el sistema linfático.',q:'sacudir cuerpo entero sistema linfático 3 minutos'},
+{id:2,t:'05:15',e:'💧',n:'Agua (1 L) y sol en los ojos',d:'Agua con pizca de sal y 10 min de luz natural.',w:'Rehidrata y regula el cortisol matutino.',q:'luz solar mañana ritmo circadiano cortisol Huberman'},
+{id:3,t:'06:00',e:'🏋️',n:'Entrenamiento de fuerza',d:'Rutina de hipertrofia según el día.',w:'Cambio físico y testosterona.',q:'rutina hipertrofia push pull legs principiantes'},
+{id:4,t:'07:30',e:'🍳',n:'Desayuno alto en proteína',d:'Come sin distracciones, prioriza proteína.',w:'Recuperación muscular.',q:'desayuno alto en proteína saludable'},
+{id:5,t:'09:00',e:'📚',n:'Bloque de estudio profundo',d:'Active Recall: evalúate, no releas.',w:'Retención universitaria.',q:'active recall como estudiar mas rapido'},
+{id:6,t:'11:30',e:'🤸',n:'Pausa activa',d:'Levántate, estira, 20 sentadillas.',w:'Circulación tras estar sentado.',q:'pausa activa estiramientos 5 minutos oficina'},
+{id:7,t:'12:00',e:'🥤',n:'Agua (segundo litro)',d:'Completa el segundo litro del día.',w:'Hidratación sostenida.',q:'cuanta agua tomar al dia'},
+{id:8,t:'14:00',e:'🗣️',n:'Práctica de inglés',d:'Escucha podcast/TEDx e imita pronunciación (shadowing).',w:'Fluidez y puertas globales.',q:'shadowing technique english pronunciation'},
+{id:9,t:'16:00',e:'🤝',n:'Habilidades de comunicación',d:'Analiza una negociación y toma notas.',w:'Aprender a vender y conectar.',q:'tecnicas de negociacion y comunicacion persuasiva'},
+{id:10,t:'18:00',e:'🚰',n:'Agua (litro final)',d:'Último litro temprano para dormir sin interrupciones.',w:'Optimización.',q:'hidratacion antes de dormir'},
+{id:11,t:'20:00',e:'🏛️',n:'Palacio de la memoria',d:'Repasa lo aprendido ubicándolo en cuartos de tu casa.',w:'Frena la curva del olvido.',q:'palacio de la memoria como hacerlo'},
+{id:12,t:'21:30',e:'🌙',n:'Rutina de sueño',d:'Apaga pantallas, prepara la ropa del gym.',w:'Descanso profundo.',q:'rutina de sueño higiene del sueño'}];
+const TIPS=['Toma 10 min de sol apenas despiertes: setea tu reloj biológico.','Grábate hablando 2 minutos y analiza tu lenguaje corporal.','Técnica Feynman: si no lo explicas como a un niño, repásalo.','El músculo crece descansando. Proteína y a dormir a tu hora.','Escucha el doble de lo que hablas al negociar.','La disciplina vence a la motivación.','Tu yo de enero te está mirando. No le falles.'];
+const PH=[{n:21,t:'Hábitos',e:'🧠',c:'#38bdf8',d:'Tu cerebro automatiza la rutina.',g:['Despertar a las 5:00 sin pelear','3 litros de agua diarios','Entrenar sin negociar contigo','Estudiar con Active Recall','Dormir antes de las 22:00']},
+{n:31,t:'Cambio',e:'🔥',c:'#a78bfa',d:'El espejo y la gente ya lo notan.',g:['Cambio físico visible','Inglés: shadowing diario constante','Hablar con más seguridad','Racha mínima de 14 días','Energía estable todo el día']},
+{n:70,t:'Meta',e:'🏆',c:'#fbbf24',d:'17 de enero: un hombre nuevo.',g:['Físico transformado','Inglés fluido en conversación','Notas altas en la universidad','Comunicación y negociación sólidas','Hábitos que ya son identidad']}];
+const LIB=[['Técnica Feynman','Explica como a un niño',yt('técnica Feynman como estudiar')],['Active Recall','Evalúate en vez de releer',yt('active recall espaciado estudio')],['Palacio de la memoria','Asocia ideas a lugares',yt('palacio de la memoria tutorial')],['Shadowing en inglés','Imita pronunciación',yt('shadowing english technique')],['Comunicación 1%','Hablar con presencia',yt('como hablar en publico con seguridad')],['Negociación','Escucha 2x, habla 1x',yt('tecnicas de negociacion Chris Voss')]];
+const REELS=['reel/DawPr_vsUjT','reel/DaA8Ee_RB20','reel/Da5-bGFNlQB','reel/Da6_RTtN6cn','reel/DdegibFOWu8','reel/Deb3IT8ouoS','reel/DfPfqAFO8F2','reel/DQuHjmliIvH','reel/DaVhb-Ys_KS','reel/DVvoDPRDsBh','reel/De6xUV3HDX4','reel/De5haRiRoDY','reel/DePUNPBBwVz','reel/DeE3iLSA5SE','reel/DfJOAY7uHh6','reel/DfREItTz_2Q','reel/DfVL51gOt9T','reel/DfSR1u4R5ml','p/DeuwhE9G2BE','reel/DeZ9BvrKxGj','p/DefyGSDgPon','reel/De250XYOv_M','p/DeWqjqfk9lM','reel/Dd8AIUnxeoS','p/DdRyH8Sl3lD','reel/DYJKS6Ruc_H','reel/DduhiVsRqwU','reel/DZLjuI-A96f','reel/Ddm60XWNMaa','reel/DZlc0fNRSAq','reel/DdkzPoXONvF'];
+
+let S={days:{},goals:{},reels:{},seen:{}};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem('a70v2')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('a70v2',JSON.stringify(S))}catch(e){}};
+const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dt=i=>new Date(2026,10,9+i);
+const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
+const dayNum=d=>Math.round((d-START)/DAY)+1;
+const rec=k=>S.days[k]||(S.days[k]={done:[],note:''});
+const pct=k=>S.days[k]?Math.round(S.days[k].done.length/TASKS.length*100):0;
+let sel=fmt(today()<START?START:(dayNum(today())>TOTAL?dt(69):today()));
+let view=(location.hash||'#inicio').slice(1),open=null,cm=10,tab='tec';
+const nowDay=Math.max(0,Math.min(TOTAL,dayNum(today())));
+
+function ring(p,s,c,txt){const r=s/2-8,C=2*Math.PI*r;return `<div class="ring" style="width:${s}px;height:${s}px"><svg width="${s}" height="${s}"><circle cx="${s/2}" cy="${s/2}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/><circle class="c" style="--C:${C}" cx="${s/2}" cy="${s/2}" r="${r}" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-p/100)}"/></svg><b style="font-size:${s/5}px">${txt??Math.round(p)+'%'}</b></div>`}
+const lvl=p=>p>=100?'p':p>=70?'l2':p>0?'l1':'';
+function streaks(){let cur=0,best=0,run=0;const lim=Math.min(nowDay,TOTAL);for(let i=0;i<lim;i++){if(pct(fmt(dt(i)))>=70){run++;best=Math.max(best,run)}else run=0}
+cur=0;for(let i=lim-1;i>=0;i--){if(pct(fmt(dt(i)))>=70)cur++;else if(i===lim-1&&nowDay>0&&fmt(dt(i))===fmt(today()))continue;else break}return{cur,best}}
+function phaseAvg(n){let s=0,c=0;for(let i=0;i<Math.min(n,nowDay);i++){s+=pct(fmt(dt(i)));c++}return c?Math.round(s/c):0}
+
+function vInicio(){const d=new Date(sel+'T00:00:00'),n=dayNum(d),r=rec(sel),p=pct(sel),tip=TIPS[((n%7)+7)%7];
+const pre=today()<START?`<div class="card" style="border-color:var(--a)">⏳ El reto inicia el <b>9 nov</b>. Ve practicando con el Día 1.</div>`:'';
+return `<div class="row" style="margin-bottom:14px"><div><p class="mut" style="text-transform:uppercase">${d.toLocaleDateString('es-SV',{weekday:'long',day:'numeric',month:'short'})}</p><h1>Hola, <span class="grad">Anderson</span></h1></div>${ring(n/TOTAL*100,84,'#9b5cff','D'+Math.max(n,0))}</div>${pre}
+<div class="card"><div class="row"><div><p class="mut">Progreso del día</p><p class="big grad">${p}%</p><p class="mut">${r.done.length}/${TASKS.length} tareas</p></div>${ring(p,96,p>=100?'#fbbf24':'#4f7cff')}</div><div class="bar" style="margin-top:12px"><i style="width:${n/TOTAL*100}%"></i></div><p class="mut" style="margin-top:6px">Reto completo: ${Math.round(Math.max(n,0)/TOTAL*100)}% · faltan ${Math.max(0,TOTAL-n)} días</p></div>
+<div class="card"><h3>⚡ Consejo del día</h3><p class="mut" style="font-size:13px;margin-top:6px;color:#c3c9d9">${tip}</p></div>
+<div class="card"><h2>🗓️ Plan de acción</h2>${TASKS.map(t=>{const on=r.done.includes(t.id);return `<div class="task ${on?'d':''} ${open===t.id?'o':''}"><div class="h" onclick="op(${t.id})"><span style="font-size:22px">${t.e}</span><div style="flex:1"><div class="t" style="font-weight:600;font-size:14px">${t.n}</div><div class="mut">${t.t}</div></div><button class="chk ${on?'on':''}" onclick="event.stopPropagation();tg(${t.id})">${on?'✓':''}</button></div><div class="det"><p><b>Qué/Cómo:</b> ${t.d}</p><p style="margin-top:4px"><b>Por qué:</b> ${t.w}</p><a href="${yt(t.q)}" target="_blank" rel="noopener">▶ Ver videos de esto</a></div></div>`}).join('')}</div>
+<div class="card"><h2>📝 Diario / Notas del día</h2><textarea id="note" placeholder="¿Qué aprendiste hoy? ¿Qué mejorarás mañana?" oninput="nt(this.value)">${r.note}</textarea></div>`}
+
+function vCal(){const f=new Date(2026,cm,1),dim=new Date(2026,cm+1,0).getDate(),off=(f.getDay()+6)%7;let h='';
+for(let i=0;i<off;i++)h+='<div class="cell out"></div>';
+for(let d=1;d<=dim;d++){const dd=new Date(2026,cm,d),k=fmt(dd),n=dayNum(dd),inr=n>=1&&n<=TOTAL,p=pct(k);h+=`<div class="cell ${inr?lvl(p):'out'} ${k===sel?'sel':''} ${k===fmt(today())?'td':''}" onclick="go('${k}')">${d}</div>`}
+const names=['Nov','Dic','Ene'];const ms=[10,11,12];
+const pc=Object.keys(S.days).filter(k=>pct(k)===100).length;
+return `<h1 style="margin-bottom:14px">📅 <span class="grad">Calendario</span></h1><div class="card"><div class="row" style="margin-bottom:12px"><button class="btn" onclick="cmv(-1)">‹</button><h2 style="margin:0">${['Noviembre','Diciembre','Enero'][cm-10]} ${cm>11?2027:2026}</h2><button class="btn" onclick="cmv(1)">›</button></div><div class="cal">${'LMMJVSD'.split('').map(x=>`<div class="dn">${x}</div>`).join('')}${h}</div></div>
+<div class="card"><h3>Leyenda</h3><div class="row" style="margin-top:10px;flex-wrap:wrap;justify-content:flex-start"><span class="mut">🟪 1–69%</span><span class="mut">🟦 ≥70%</span><span class="mut">🟨★ 100% día perfecto</span></div><p style="margin-top:10px">Días perfectos: <b class="grad">${pc}</b> 🏆</p></div>`}
+
+function vStats(){const {cur,best}=streaks();const ks=Object.keys(S.days).filter(k=>S.days[k].done.length);const avg=ks.length?Math.round(ks.reduce((a,k)=>a+pct(k),0)/ks.length):0;const perf=ks.filter(k=>pct(k)===100).length;
+const last=[];for(let i=13;i>=0;i--){const d=new Date(today()-i*DAY);last.push([d,pct(fmt(d))])}
+let heat='';for(let i=0;i<TOTAL;i++){heat+=`<div class="cell ${lvl(pct(fmt(dt(i))))}" title="Día ${i+1}">${i+1}</div>`}
+return `<h1 style="margin-bottom:14px">📊 <span class="grad">Estadísticas</span></h1>
+<div class="grid2"><div class="card"><p class="mut">🔥 Racha</p><p class="big">${cur}</p></div><div class="card"><p class="mut">🏅 Mejor racha</p><p class="big">${best}</p></div><div class="card"><p class="mut">📈 Promedio</p><p class="big">${avg}%</p></div><div class="card"><p class="mut">🏆 Días perfectos</p><p class="big">${perf}</p></div></div>
+<div class="card"><h2>Últimos 14 días</h2><div class="bars">${last.map(([d,p],i)=>`<div style="height:${Math.max(p,3)}%;animation-delay:${i*.05}s;${p===100?'background:linear-gradient(#fbbf24,#f97316)':''}"></div>`).join('')}</div><div class="row mut" style="margin-top:6px"><span>${last[0][0].getDate()}/${last[0][0].getMonth()+1}</span><span>hoy</span></div></div>
+<div class="card"><h2>Mapa de 70 días</h2><div class="heat">${heat}</div></div>
+<div class="card"><h2>% por hábito</h2>${TASKS.map(t=>{const days=Math.max(1,Math.min(nowDay,TOTAL)),c=ks.filter(k=>S.days[k].done.includes(t.id)).length,p=Math.round(c/days*100);return `<div style="margin-bottom:10px"><div class="row"><span style="font-size:12px">${t.e} ${t.n}</span><b style="font-size:12px">${p}%</b></div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('')}</div>`}
+
+function vMetas(){return `<h1 style="margin-bottom:6px">🎯 <span class="grad">Metas</span></h1><p class="mut" style="margin-bottom:14px">Todo lo que lograrás en cada etapa.</p>`+PH.map((p,i)=>{const tp=Math.min(100,Math.round(nowDay/p.n*100)),av=phaseAvg(p.n),gk=p.g.filter((_,j)=>S.goals[i+'_'+j]).length;
+return `<div class="card ph" style="--c:${p.c}"><div class="row"><div><p class="mut">DÍA ${p.n}</p><h2 style="margin:0">${p.e} ${p.t}</h2><p class="mut" style="margin-top:4px">${p.d}</p></div>${ring(tp,84,p.c)}</div>
+<div class="grid2" style="margin:12px 0"><div><p class="mut">Tiempo</p><div class="bar"><i style="width:${tp}%"></i></div></div><div><p class="mut">Cumplimiento ${av}%</p><div class="bar"><i style="width:${av}%"></i></div></div></div>
+${p.g.map((g,j)=>`<div class="goal"><button class="chk ${S.goals[i+'_'+j]?'on':''}" style="width:22px;height:22px" onclick="gl('${i+'_'+j}')">${S.goals[i+'_'+j]?'✓':''}</button><span>${g}</span></div>`).join('')}<p class="mut" style="margin-top:6px">Metas logradas: ${gk}/${p.g.length}</p></div>`}).join('')}
+
+function vLib(){const rl=REELS.map((r,i)=>{const o=S.reels[r]||{};return `<div class="card" style="margin-bottom:10px"><div class="row"><div><h3>${o.t||'Reel #'+(i+1)}</h3><p class="mut">${o.n||'Sin notas aún'}</p></div><div style="display:flex;gap:6px"><button class="btn" style="margin:0" onclick="er('${r}')">✏️</button><a class="btn" style="margin:0" target="_blank" rel="noopener" href="https://www.instagram.com/${r}/">▶</a></div></div></div>`}).join('');
+return `<h1 style="margin-bottom:12px">📚 <span class="grad">Biblioteca</span></h1><div class="tabs"><button onclick="tb('tec')" style="${tab=='tec'?'background:var(--a)':''}">Técnicas</button><button onclick="tb('rl')" style="${tab=='rl'?'background:var(--a)':''}">Mis reels (${REELS.length})</button></div>`+(tab=='tec'?LIB.map(l=>`<div class="card"><h3>${l[0]}</h3><p class="mut">${l[1]}</p><a class="btn" href="${l[2]}" target="_blank" rel="noopener">▶ Buscar en YouTube</a></div>`).join('')+`<p class="mut">Los enlaces abren la búsqueda en YouTube del tema para que escojas el video.</p>`:`<p class="mut" style="margin-bottom:10px">Toca ▶ para abrir el reel y ✏️ para ponerle título y notas del ejercicio.</p>`+rl)}
+
+const V={inicio:vInicio,calendario:vCal,stats:vStats,metas:vMetas,biblioteca:vLib};
+const NAV=[['inicio','🏠','Inicio'],['calendario','📅','Calendario'],['stats','📊','Stats'],['metas','🎯','Metas'],['biblioteca','📚','Biblio']];
+function render(){if(!V[view])view='inicio';document.getElementById('app').innerHTML=V[view]();document.getElementById('nav').innerHTML=NAV.map(n=>`<a href="#${n[0]}" class="${view==n[0]?'on':''}"><span>${n[1]}</span>${n[2]}</a>`).join('')}
+window.addEventListener('hashchange',()=>{view=location.hash.slice(1);render();scrollTo(0,0)});
+function op(id){open=open===id?null:id;render()}
+function tg(id){const r=rec(sel),i=r.done.indexOf(id);i>=0?r.done.splice(i,1):r.done.push(id);save();render();if(r.done.length===TASKS.length&&!S.seen[sel]){S.seen[sel]=1;save();perfect()}}
+function nt(v){rec(sel).note=v;save()}
+function go(k){sel=k;location.hash='#inicio'}
+function cmv(x){cm=Math.max(10,Math.min(12,cm+x));render()}
+function gl(k){S.goals[k]=!S.goals[k];save();render()}
+function tb(t){tab=t;render()}
+function er(r){const o=S.reels[r]||{};const t=prompt('Título del ejercicio / reel:',o.t||'');if(t===null)return;const n=prompt('Notas (cómo se hace, series, duración):',o.n||'');S.reels[r]={t:t,n:n||''};save();render()}
+function perfect(){const n=dayNum(new Date(sel+'T00:00:00')),m={21:['¡HÁBITOS FORMADOS!','Día 21: tu cerebro ya automatizó el proceso.'],31:['¡EL CAMBIO LLEGÓ!','Día 31: el espejo ya lo nota.'],70:['¡RETO COMPLETADO!','Día 70: eres un hombre nuevo. Misión cumplida.']}[n]||['¡DÍA PERFECTO!','12/12 tareas. Hoy ganaste Día '+n+'. Descansa, campeón.'];
+document.getElementById('pt').textContent=m[0];document.getElementById('pm').textContent=m[1];document.getElementById('pf').style.display='flex';
+const end=Date.now()+3000;(function f(){confetti({particleCount:6,angle:60,spread:60,origin:{x:0},colors:['#fbbf24','#f97316','#fff','#9b5cff']});confetti({particleCount:6,angle:120,spread:60,origin:{x:1},colors:['#fbbf24','#f97316','#fff','#4f7cff']});if(Date.now()<end)requestAnimationFrame(f)})()}
+render();
+</script>
+</body>
+</html>
